@@ -1,0 +1,10 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<h1>Упаковка рюкзака</h1>
+<form action="{{ url_for('pack') }}" id="pack-form" method="POST">
+	<label for="totvol-id">Введите лимит объема: </label>
+	<input type="number" required step=0.1 name="total-vol" id="totvol-id">
+	<input type="Submit" value="Упаковать вещи">
+</form>
+{% endblock %}

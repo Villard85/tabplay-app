@@ -1,0 +1,19 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<h1>Упаковка рюкзака</h1>
+<form action="{{ url_for('pack') }}" id="pack-form" method="POST">
+	<label for="totvol-id">Введите лимит объема: </label>
+	<input type="number" required step=0.1 name="total-vol" id="totvol-id">
+	<input type="Submit" value="Упаковать рюкзак">
+</form>
+{% endblock %}
+{% block results%}
+<h3>Содержимое рюкзака:</h3>
+<p>
+Предметы: [{{ res['names'] }}]<br>
+Лимит объема: <strong>{{ res['limit'] }}</strong><br>
+Общий объем вещей: <strong>{{ res['vol'] }}</strong><br>
+Общая стоимость: <strong>{{ res['val'] }}</strong>
+</p>
+{% endblock %}

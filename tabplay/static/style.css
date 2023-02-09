@@ -1,0 +1,159 @@
+*{
+	margin: 0px;
+	padding: 0px;
+	box-sizing: border-box;
+	
+}
+
+html{
+	font-size: 60%;
+	height: 100%;
+}
+
+main{
+	display: grid;
+	height: 100%;
+	grid-template-rows: 2rem 1fr 1fr;
+	grid-template-columns: 1fr 1fr;
+	grid-template-areas:
+	"box3 box3"
+	"box1 box2"
+	"box1 box4";
+	background-position: center;
+	background-size: cover;
+	background-image: url("/static/board.jpg");
+}
+#table{
+		margin: 1rem;
+}
+
+.input-box{
+	grid-area: box1;
+	background-color: rgb(191,191,191,0.9);
+	margin: 1rem;
+	border-radius: 1rem;
+	/*text-align: center;*/
+}
+
+.output-box{
+	grid-area: box2;
+	background-color: rgb(191,191,191,0.9);
+	margin: 1rem;
+	border-radius: 1rem;
+}
+.info-box{
+	grid-area: box4;
+	background-color: rgb(210,210,210,0.95);
+	margin: 1rem;
+	border-radius: 1rem;
+}
+
+.status-line{
+	grid-area: box3;
+}
+
+h1{
+	margin-bottom: 2rem;
+	margin-top: 2rem;
+	margin-left: 2rem;
+	font-size: 3rem;
+}
+
+#add-form, #clear-form, #file-form{
+	margin: 1rem;
+}
+
+input, label, #table{
+	font-size: 2rem;
+}
+
+[type="Submit"]{
+	margin: 1rem;
+	font-size: 1.8rem;
+	background-color: #52A06E;
+	color: white;
+	padding: 10px;
+	border: none;
+	border-radius: 1rem;
+	border-top-left-radius: 2rem;
+	cursor: pointer;
+	width: 30%;
+}
+[type="Submit"]:hover{
+	background-color: #427B57;
+	
+}
+
+label{
+	margin: 1rem;
+}
+.good{
+	color: #129A1A;
+	font-size: 2rem;
+	padding-left: 3rem;
+	margin-bottom: 1rem;
+	background-color: #E4FEE8;
+}
+
+.bad{
+	color: #C33B0B;
+	font-size: 2rem;
+	padding-left: 3rem;
+	margin-bottom: 1rem;
+	background-color: #FEE6E4;
+}
+.blue{
+	color: #0711AF;
+	font-size: 2rem;
+	padding-left: 3rem;
+	margin-bottom: 1rem;
+	background-color: #C0C3FD;
+}
+
+.del-button{
+	font-size: 1.8rem;
+	background-color: #2D8FED;
+	color: white;
+	padding: 10px;
+	font-style: sans-serif;
+	border: none;
+	border-radius: 1rem;
+	border-top-left-radius: 2rem;
+	cursor: pointer;
+}
+.del-button:hover{
+	background-color: #0058AE;
+}
+
+h3, p{
+	font-size: 2rem;
+	
+}
+h3{
+	margin: 1rem;
+	margin-left: 3rem;
+}
+p{
+	margin-left: 3rem;
+	margin-right: 2rem;
+	margin-bottom: 1rem;
+}
+#pack-form{
+	margin-left:2rem;
+}
+
+#clear-button{
+	
+	background-color: #E54747;
+	
+}
+#clear-button:hover{
+	background-color: #B52C2D;
+}
+/*label{
+	margin: 0, 1rem;
+	font-size: 2 rem;
+}
+input{
+	font-size: 2 rem;
+}*/
