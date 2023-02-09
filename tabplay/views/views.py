@@ -76,7 +76,7 @@ def add_item():
 	items = session.get('items')
 	fields = request.form
 	new_id = randint(10000, 90000)
-	while new_id in items.keys():
+	while str(new_id) in items.keys():
 		new_id = randint(10000, 90000)
 	items[str(new_id)] = {'id': new_id, 'item': fields['item-name'], 
 	'vol': float(fields['item-vol']), 'val': float(fields['item-val'])} 
@@ -193,10 +193,10 @@ def read_file():
 				item['vol'] = round(float(data[1]),1)
 				item['val'] = round(float(data[2]),1)
 				new_id = randint(10000, 90000)
-				while new_id in items.keys():
+				while str(new_id) in items.keys():
 					new_id = randint(10000, 90000)
 				item['id'] = new_id
-				items[new_id] = item
+				items[str(new_id)] = item
 				count += 1
 			except Exception:
 				pass
