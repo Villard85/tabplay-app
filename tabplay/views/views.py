@@ -98,7 +98,7 @@ def pack():
 			solution=[]
 		else:
 			population, generations = genetic.run_evolution(
-				populate_func=partial(genetic.generate_population, size=4, genome_length=len(item_list)),
+				populate_func=partial(genetic.generate_population, size=20, genome_length=len(item_list)),
 				fitness_func=partial(fitness, item_list=item_list, v_limit=v_limit),
 				fitness_limit=tot_val(item_list),
 				generation_limit=100
