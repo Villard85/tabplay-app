@@ -3,6 +3,15 @@
 #
 #  tabplay/views/views.py
 #
+
+# TODO
+# - store user data in db instead of session
+# - clean db when session expires
+# - add reading of genetic algo parameters from user
+# - read config from environment (not cfg - this is for
+# development only!)
+# - add equipment and quota distribution problem solvers
+
 from flask import request, redirect, url_for, render_template
 from flask import flash, session
 from tabplay import app
@@ -112,6 +121,7 @@ def pack():
 			flash(">--Жадное решение--<", "blue")
 		else:
 			flash('Рюкзак упакован', 'good')
+		solution = sorted(solution, key=lambda item: item['val'], reverse=True)
 		res={}
 		res['limit']=v_limit
 		res['names']=name_list(solution)
@@ -210,3 +220,7 @@ def read_file():
 		flash("Файл не выбран", "bad")
 		return redirect(url_for('index'))
 	return redirect(url_for('index'))
+
+@app.route('/about')
+def about():
+	return render_template("about.html")

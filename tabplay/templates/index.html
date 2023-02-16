@@ -1,10 +1,160 @@
 {% extends "layout.html" %}
 
 {% block content %}
-<h1>Упаковка рюкзака</h1>
-<form action="{{ url_for('pack') }}" id="pack-form" method="POST">
-	<label for="totvol-id">Введите лимит объема: </label>
-	<input type="number" required step=0.1 name="total-vol" id="totvol-id">
-	<input type="Submit" value="Упаковать вещи">
-</form>
+<div class="app-content">
+	<div class="input-box">
+				<h1>Список предметов</h1>
+			
+			<div id="table"></div>
+			<script>
+				const tableDiv = document.getElementById("table");
+
+				const editableCellAttributes = (data, row, col) => {
+					if (row) {
+						return {contentEditable: 'true', 'data-element-id': row.cells[0].data};
+					}
+					else {
+						return {};
+					}
+				};
+
+				new gridjs.Grid({
+						columns: [
+						  { id: 'id', 'hidden': true },
+						  { id: 'item', name: 'Предмет' , 'attributes': editableCellAttributes},
+						  { id: 'vol', name: 'Объем предмета','attributes': editableCellAttributes,
+							  formatter: (cell) => parseFloat(cell) },
+						  { id: 'val', name: 'Стоимость предмета', 'attributes': editableCellAttributes,
+							   formatter: (cell) => parseFloat(cell) },
+							{id: 'del', name: 'Действия', 
+								formatter: (cell, row) => {
+									return gridjs.h('button', {
+										className: 'del-button',
+										onClick: () => {
+											fetch('/api/delete', {
+												method: 'POST',
+												headers: {'Content-Type': 'application/json'},
+												body: JSON.stringify({	
+													id: row.cells[0].data
+												})
+											}).then(() => {
+												window.location.href = "{{ url_for('index') }}"});
+										}}, 'Удалить');
+								}}
+							   ],
+						server: {
+							url: '/api/data',
+							then: results => results.data,
+							}
+						,
+						sort: true,
+						pagination: true,
+						resizable: true
+					  }).render(tableDiv);
+				
+				let savedValue;
+				
+				tableDiv.addEventListener('focusin', ev => {
+					if (ev.target.tagName === 'TD') {
+						savedValue = ev.target.textContent;
+					}
+				});
+
+				tableDiv.addEventListener('focusout', ev => {
+					if (ev.target.tagName === 'TD') {
+						if (savedValue !== ev.target.textContent) {
+							fetch('/api/data', {
+								method: 'POST',
+								headers: {'Content-Type': 'application/json'},
+								body: JSON.stringify({
+									id: ev.target.dataset.elementId,
+									[ev.target.dataset.columnId]: ev.target.textContent
+								}),
+							}).then(()=>{window.location.reload()});
+							
+						}
+						savedValue = undefined;
+					}
+				}
+				
+				);
+
+				tableDiv.addEventListener('keydown', ev => {
+					if (ev.target.tagName === 'TD') {
+						if (ev.key === 'Escape') {
+							ev.target.textContent = savedValue;
+							ev.target.blur();
+						}
+						else if (ev.key === 'Enter') {
+							ev.preventDefault();
+							ev.target.blur();
+						}
+					}
+				});
+			</script>
+			
+			<form id="add-form" action="{{ url_for('add_item') }}" method="POST">
+				<label for ="name_id">Название предмета: </label><br>
+				<input type="text" name="item-name" id="name_id" required><br>
+				<label for ="vol_id">Объем: </label><br>
+				<input type="number" name="item-vol" id="vol_id" step=0.1 required><br>
+				<label for ="val_id">Стоимость: </label><br>
+				<input type="number" name="item-val" id="val_id" step=0.1 required><br>
+				<input type="Submit" value="Добавить в список">
+			</form>
+			<form id="file-form" method="POST" action="{{ url_for('read_file') }}" enctype="multipart/form-data">
+				<input type="file" name="item-file"><br>
+				<input id="load-button" type="Submit" value="Загрузить из файла">
+			</form>
+			<form id="clear-form" action="{{ url_for('clear') }}">
+				<input id="clear-button" type="Submit" value="Очистить список" />
+			</form>
+
+			</div>
+			<div class="output-box">
+				<h1>Упаковка рюкзака</h1>
+					<form action="{{ url_for('pack') }}" id="pack-form" method="POST">
+						<label for="totvol-id">Введите лимит объема: </label>
+						<input type="number" required step=0.1 name="total-vol" id="totvol-id">
+						<input type="Submit" value="Упаковать вещи">
+					</form>
+				{% block results %}{% endblock %}
+			</div>
+			<div class="status-line">
+				{% with messages = get_flashed_messages(with_categories=true) %}
+					{% for category, message in messages %}
+					<div class="{{ category }}">
+						{{ message }}
+					</div>
+					{% endfor %}
+				{% endwith %}
+			</div>
+			<div class="info-box">
+				<h1>О программе</h1>
+				<p><strong>Дорогой гость!</strong><br> Это приложение решает классическую задачу 
+				<a target="_blank" href="https://ru.wikipedia.org/wiki/%D0%97%D0%B0%D0%B4%D0%B0%D1%87%D0%B0_%D0%BE_%D1%80%D1%8E%D0%BA%D0%B7%D0%B0%D0%BA%D0%B5">
+					об упаковке рюкзака
+				</a>, а	точнее, её самую простую разновидность, задачу типа "0-1".</p>
+				<p>Эта задача формулируется так: есть набор предметов, каждый из которых имеет определенный объем и стоимость.
+				Также имеется рюкзак фиксированного объема. Требуется разместить в рюкзаке предметы из набора так, чтобы
+				их общий объем не превышал объема рюкзака, а стоимость была максимальна. При этом каждый предмет имеется 
+				только в одном экземпляре. </p>
+				<p>
+				Для небольшого числа предметов задача легко решается простым перебором, но, когда предметов 
+				становится больше, решение перестает быть тривиальным. В представленом приложении для поиска 
+				решения задачи используется генетический алгоритм, подробная реализация которого 
+				отлично описана в <a target="_blank" href="https://www.youtube.com/watch?v=uQj5UNhCPuo">
+					этом
+				</a> и <a target="_blank" href="https://www.youtube.com/watch?v=nhT56blfRpE">
+					вот в этом
+				</a>видео. Этот алгоритм не гарантирует нахождение решения даже если оно есть, 
+				но обычно позволяет быстро найти "достаточно хорошее" решение.
+				Более подробно о пользовании программой написано 
+				<a href="{{ url_for('about') }}">
+					здесь.
+				</a>
+				</p>
+				<p>Надеюсь, что эта простая игрушка окажется интересной и полезной!</p>
+			</div>
+</div>
 {% endblock %}
