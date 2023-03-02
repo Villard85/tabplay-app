@@ -3,11 +3,7 @@
 #
 #  tabplay/config.py
 #  
-# DEBUG = True
-# SECRET_KEY='Secret for table tutorial'
-# MAX_CONTENT_LENGTH = 1024*3+256
-# SESSION_COOKIE_SAMESITE="Strict"
-# UPLOAD_EXTENSIONS = ['csv', 'txt', 'dat']
+
 import os
 
 SECRET_KEY = os.environ.get("SECRET_KEY")
