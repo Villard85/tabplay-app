@@ -10,10 +10,13 @@ CrossoverFunc = Callable[[Genome, Genome], Tuple[Genome, Genome]]
 MutationFunc = Callable[[Genome], Genome]
 PrinterFunc = Callable[[Population, int, FitnessFunc], None]
 
+EqGenome = List[List[int]]
+EqPopulation = List[EqGenome]
+Inputs = List[float]
 
-def generate_genome(length: int) -> Genome:
+
+def generate_genome(length: int) -> EqGenome:
 	return choices([0, 1], k=length)
-
 
 def generate_population(size: int, genome_length: int) -> Population:
 	return [generate_genome(genome_length) for _ in range(size)]

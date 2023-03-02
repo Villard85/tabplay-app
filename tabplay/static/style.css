@@ -75,11 +75,12 @@ div.info-box a{
 	color: #0234BC;
 }
 
-div.about-box a{
+div.about-box a, div.index-page a{
 	text-decoration: none;
 	font-size: 2rem;
 	color: #0234BC;
 }
+
 
 main{
 	position: relative;
@@ -90,25 +91,59 @@ main{
 .app-content{
 	display: grid;
 	height: 100%;
-	grid-template-rows: 2rem 1fr 1fr;
+	grid-template-rows: 2rem 1fr;
 	grid-template-columns: 1fr 1fr;
 	grid-template-areas:
 	"box3 box3"
-	"box1 box2"
-	"box1 box4";
+	"box1 box2";
+	/*"box1 box4";*/
 	
 }
 
-#table{
-		margin: 1rem;
+.equip-content{
+	display: grid;
+	height: 100%;
+	grid-template-rows: 2rem 2fr 1fr;
+	grid-template-columns: 1fr 1fr;
+	grid-template-areas:
+	"box3 box3"
+	"box5 box6"
+	"box7 box7";
+}
+
+.quotas-content{
+	display: grid;
+	height: 100%;
+	grid-template-rows: 2rem 1fr;
+	grid-template-columns: 1fr 1fr;
+	grid-template-areas:
+	"box3 box3"
+	"box6 box7";
+}
+
+#table, #people-table, #thing-table, .res-table, #customer-table{
+		margin: 2rem;
+}
+.t-input-box, .p-input-box, .input-box, .eq-output-box{
+	background-color: rgb(191,191,191,0.9);
+	margin: 1rem;
+	border-radius: 1rem;
+}
+
+.t-input-box{
+	grid-area: box5;
+	
+}
+.p-input-box{
+	grid-area: box6;
 }
 
 .input-box{
 	grid-area: box1;
-	background-color: rgb(191,191,191,0.9);
-	margin: 1rem;
-	border-radius: 1rem;
-	/*text-align: center;*/
+}
+
+.eq-output-box{
+	grid-area: box7;
 }
 
 .output-box{
@@ -125,8 +160,8 @@ main{
 	border-radius: 1rem;
 }
 
-.about-box{
-	background-color: rgb(210,210,210,0.95);
+.about-box, .index-page{
+	background-color: rgb(250,250,250,0.9);
 	width: 95vw;
 	height: 100%;
 	margin: auto;
@@ -144,11 +179,18 @@ h1{
 	font-size: 3rem;
 }
 
-#add-form, #clear-form, #file-form{
-	margin: 1rem;
+h2{
+	margin-bottom: 2rem;
+	margin-top: 2rem;
+	margin-left: 2.5rem;
+	font-size: 2.5rem;
 }
 
-input, label, #table, li{
+.add-form, .clear-form, .file-form{
+	margin: 2rem;
+}
+
+input, label, #table, #people-table, #thing-table, li{
 	font-size: 2rem;
 }
 
@@ -169,7 +211,7 @@ input, label, #table, li{
 	
 }
 
-#pack-form input[type="Submit"]{
+.pack-form input[type="Submit"]{
 	width: 250px;
 }
 
@@ -216,9 +258,19 @@ label{
 	background-color: #0058AE;
 }
 
-h3, p{
+h3, p, th, td{
 	font-size: 2rem;
 	
+}
+
+table{
+	margin-left: 4rem;
+}
+
+table, td, th{
+	border: 1px solid black;
+	border-collapse: collapse;
+	padding: 1rem;
 }
 
 h3{
@@ -231,21 +283,23 @@ p{
 	margin-right: 2rem;
 	margin-bottom: 1rem;
 }
-#pack-form{
+.pack-form{
 	margin-left:2rem;
 }
 
-#clear-button{
+.clear-button{
 	
 	background-color: #E54747;
 	
 }
-#clear-button:hover{
+.clear-button:hover{
 	background-color: #B52C2D;
 }
 
-ul.steps{
-	margin-left: 4rem;
+ul.steps, ul.app-links{
+	margin-left: 6rem;
+	margin-bottom: 2rem;
+	padding-bottom: 2rem;
 	
 }
 /*label{

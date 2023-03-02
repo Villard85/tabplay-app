@@ -1,0 +1,137 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="quotas-content">
+			
+			<div class="p-input-box">
+				<h1>Список заказов</h1>
+			
+			<div id="customer-table"></div>
+			<script>
+				const tableDiv3 = document.getElementById("customer-table");
+
+				const editableCellAttributes = (data, row, col) => {
+					if (row) {
+						return {contentEditable: 'true', 'data-element-id': row.cells[0].data};
+					}
+					else {
+						return {};
+					}
+				};
+
+				new gridjs.Grid({
+						columns: [
+							{ id: 'id', 'hidden': true },
+							{ id: 'customer', name: 'Заказчик' , 'attributes': editableCellAttributes},
+							{ id: 'order', name: 'Объем заказа','attributes': editableCellAttributes,
+							  formatter: (cell) => parseInt(cell) },
+							{ id: 'priority', name: 'Приоритет','attributes': editableCellAttributes,
+							  formatter: (cell) => parseInt(cell) },  
+							{id: 'del', name: 'Действия', 
+								formatter: (cell, row) => {
+									return gridjs.h('button', {
+										className: 'del-button',
+										onClick: () => {
+											fetch('/quotas/api/del_customer', {
+												method: 'POST',
+												headers: {'Content-Type': 'application/json'},
+												body: JSON.stringify({	
+													id: row.cells[0].data
+												})
+											}).then(() => {
+												window.location.href = "{{ url_for('quotas_main') }}"});
+										}}, 'Удалить');
+								}}
+							   ],
+						server: {
+							url: '/quotas/api/customers_data',
+							then: results => results.data
+							}
+						,
+						sort: true,
+						pagination: true,
+						resizable: true
+					  }).render(tableDiv3);
+				
+				let savedValue3;
+				
+				tableDiv3.addEventListener('focusin', ev => {
+					if (ev.target.tagName === 'TD') {
+						savedValue3 = ev.target.textContent;
+					}
+				});
+
+				tableDiv3.addEventListener('focusout', ev => {
+					if (ev.target.tagName === 'TD') {
+						if (savedValue3 !== ev.target.textContent) {
+							fetch('/quotas/api/customers_data', {
+								method: 'POST',
+								headers: {'Content-Type': 'application/json'},
+								body: JSON.stringify({
+									id: ev.target.dataset.elementId,
+									[ev.target.dataset.columnId]: ev.target.textContent
+								}),
+							}).then(()=>{window.location.reload()});
+							
+						}
+						savedValue3 = undefined;
+					}
+				}
+				
+				);
+
+				tableDiv3.addEventListener('keydown', ev => {
+					if (ev.target.tagName === 'TD') {
+						if (ev.key === 'Escape') {
+							ev.target.textContent = savedValue3;
+							ev.target.blur();
+						}
+						else if (ev.key === 'Enter') {
+							ev.preventDefault();
+							ev.target.blur();
+						}
+					}
+				});
+			</script>
+			
+			<form class="add-form" action="{{ url_for('quotas_add') }}" method="POST">
+				<label for ="customer_id">Заказчик: </label><br>
+				<input type="text" name="customer" id="customer_id" required><br>
+				<label for ="order_id">Объем заказа </label><br>
+				<input type="number" name="order" id="order_id" step=1 required><br>
+				<label for ="priority_id">Приоритет: </label><br>
+				<input type="number" name="priority" id="priority_id" step=1 required><br>
+				<input type="Submit" value="Добавить в список">
+			</form>
+			<form class="file-form" method="POST" action="{{ url_for('quotas_read') }}" enctype="multipart/form-data">
+				<input type="file" name="customers-file" accept=".txt,.csv,.dat"><br>
+				<input id="q-load-button" type="Submit" value="Загрузить из файла">
+			</form>
+			<form class="clear-form" action="{{ url_for('quotas_clear') }}">
+				<input class="clear-button" type="Submit" value="Очистить список" />
+			</form>
+
+			</div>
+			<div class="eq-output-box">
+				<h1>Распределение квот</h1>
+					<form action="{{ url_for('quotas_arrange') }}" class="pack-form" method="POST">
+						<label for ="qlimit_id">Объем квот:</label><br>
+						<input type="number" name="qlimit" id="qlimit_id" step=1 required><br>
+						<input type="Submit" value="Распределить">
+					</form><br>
+				{% if not report==None  %}
+				{{ report|safe }}
+				{% endif %}
+			</div>
+			<div class="status-line">
+				{% with messages = get_flashed_messages(with_categories=true) %}
+					{% for category, message in messages %}
+					<div class="{{ category }}">
+						{{ message }}
+					</div>
+					{% endfor %}
+				{% endwith %}
+			</div>
+			
+</div>
+{% endblock %}

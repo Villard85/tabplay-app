@@ -1,0 +1,244 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="equip-content">
+	<div class="t-input-box">
+				<h1>Список снаряжения</h1>
+			
+			<div id="thing-table"></div>
+			<script>
+				const tableDiv1 = document.getElementById("thing-table");
+
+				const editableCellAttributes = (data, row, col) => {
+					if (row) {
+						return {contentEditable: 'true', 'data-element-id': row.cells[0].data};
+					}
+					else {
+						return {};
+					}
+				};
+
+				const t_grid = new gridjs.Grid({
+						columns: [
+						  { id: 'id', 'hidden': true },
+						  { id: 'thing', name: 'Предмет' , 'attributes': editableCellAttributes},
+						  { id: 'weight', name: 'Вес предмета','attributes': editableCellAttributes,
+							  formatter: (cell) => parseFloat(cell) },
+							{id: 'del', name: 'Действия', 
+								formatter: (cell, row) => {
+									return gridjs.h('button', {
+										className: 'del-button',
+										onClick: () => {
+											fetch('/equip/api/del_thing', {
+												method: 'POST',
+												headers: {'Content-Type': 'application/json'},
+												body: JSON.stringify({	
+													id: row.cells[0].data
+												})
+											}).then(() => {
+												window.location.href = "{{ url_for('equip_main') }}"});
+										}}, 'Удалить');
+								}}
+							   ],
+						server: {
+							url: '/equip/api/things_data',
+							then: results => results.data,
+							}
+						,
+						sort: true,
+						pagination: true,
+						resizable: true
+					  }).render(tableDiv1);
+				
+				let savedValue1;
+				
+				tableDiv1.addEventListener('focusin', ev => {
+					if (ev.target.tagName === 'TD') {
+						savedValue1 = ev.target.textContent;
+					}
+				});
+
+				tableDiv1.addEventListener('focusout', ev => {
+					if (ev.target.tagName === 'TD') {
+						if (savedValue1 !== ev.target.textContent) {
+							fetch('/equip/api/things_data', {
+								method: 'POST',
+								headers: {'Content-Type': 'application/json'},
+								body: JSON.stringify({
+									id: ev.target.dataset.elementId,
+									[ev.target.dataset.columnId]: ev.target.textContent
+								}),
+							}).then(()=>{window.location.reload()});
+							
+						}
+						savedValue1 = undefined;
+					}
+				}
+				
+				);
+
+				tableDiv1.addEventListener('keydown', ev => {
+					if (ev.target.tagName === 'TD') {
+						if (ev.key === 'Escape') {
+							ev.target.textContent = savedValue1;
+							ev.target.blur();
+						}
+						else if (ev.key === 'Enter') {
+							ev.preventDefault();
+							ev.target.blur();
+						}
+					}
+				});
+			</script>
+			
+			<form class="add-form" action="{{ url_for('eq_t_add') }}" method="POST">
+				<label for ="t-name_id">Название предмета: </label><br>
+				<input type="text" name="thing-name" id="t-name_id" required><br>
+				<label for ="t-weight_id">Вес, г: </label><br>
+				<input type="number" name="thing-weight" id="t-weight_id" step=0.1 required><br>
+				<input type="Submit" value="Добавить в список">
+			</form>
+			<form class="file-form" method="POST" action="{{ url_for('eq_t_read') }}" enctype="multipart/form-data">
+				<input type="file" name="things-file" accept=".txt,.csv,.dat"><br>
+				<input id="t-load-button" type="Submit" value="Загрузить из файла">
+			</form>
+			<form class="clear-form" action="{{ url_for('eq_t_clear') }}">
+				<input class="clear-button" type="Submit" value="Очистить список" />
+			</form>
+
+			</div>
+			
+			<div class="p-input-box">
+				<h1>Список участников</h1>
+			
+			<div id="people-table"></div>
+			<script>
+				const tableDiv2 = document.getElementById("people-table");
+
+				/*const editableCellAttributes = (data, row, col) => {
+					if (row) {
+						return {contentEditable: 'true', 'data-element-id': row.cells[0].data};
+					}
+					else {
+						return {};
+					}
+				};*/
+
+				new gridjs.Grid({
+						columns: [
+							{ id: 'id', 'hidden': true },
+							{ id: 'name', name: 'Имя' , 'attributes': editableCellAttributes},
+							{ id: 'coeff', name: 'Весовой коэффициент','attributes': editableCellAttributes,
+							  formatter: (cell) => parseFloat(cell) },
+							{ id: 'bias', name: 'Начальный вес','attributes': editableCellAttributes,
+							  formatter: (cell) => parseFloat(cell) },
+							{ id: 'importance', name: 'Значимость','attributes': editableCellAttributes,
+							  formatter: (cell) => parseFloat(cell) },  
+							{id: 'del', name: 'Действия', 
+								formatter: (cell, row) => {
+									return gridjs.h('button', {
+										className: 'del-button',
+										onClick: () => {
+											fetch('/equip/api/del_person', {
+												method: 'POST',
+												headers: {'Content-Type': 'application/json'},
+												body: JSON.stringify({	
+													id: row.cells[0].data
+												})
+											}).then(() => {
+												window.location.href = "{{ url_for('equip_main') }}"});
+										}}, 'Удалить');
+								}}
+							   ],
+						server: {
+							url: '/equip/api/people_data',
+							then: results => results.data
+							}
+						,
+						sort: true,
+						pagination: true,
+						resizable: true
+					  }).render(tableDiv2);
+				
+				let savedValue2;
+				
+				tableDiv2.addEventListener('focusin', ev => {
+					if (ev.target.tagName === 'TD') {
+						savedValue2 = ev.target.textContent;
+					}
+				});
+
+				tableDiv2.addEventListener('focusout', ev => {
+					if (ev.target.tagName === 'TD') {
+						if (savedValue2 !== ev.target.textContent) {
+							fetch('/equip/api/people_data', {
+								method: 'POST',
+								headers: {'Content-Type': 'application/json'},
+								body: JSON.stringify({
+									id: ev.target.dataset.elementId,
+									[ev.target.dataset.columnId]: ev.target.textContent
+								}),
+							}).then(()=>{window.location.reload()});
+							
+						}
+						savedValue2 = undefined;
+					}
+				}
+				
+				);
+
+				tableDiv2.addEventListener('keydown', ev => {
+					if (ev.target.tagName === 'TD') {
+						if (ev.key === 'Escape') {
+							ev.target.textContent = savedValue2;
+							ev.target.blur();
+						}
+						else if (ev.key === 'Enter') {
+							ev.preventDefault();
+							ev.target.blur();
+						}
+					}
+				});
+			</script>
+			
+			<form class="add-form" action="{{ url_for('eq_p_add') }}" method="POST">
+				<label for ="p_name_id">Имя: </label><br>
+				<input type="text" name="person-name" id="p_name_id" required><br>
+				<label for ="p_coeff_id">Весовой коэффициент: </label><br>
+				<input type="number" name="person-coeff" id="p_coeff_id" step=0.1 required><br>
+				<label for ="p_bias_id">Начальный вес: </label><br>
+				<input type="number" name="person-bias" id="p_bias_id" step=0.1 required><br>
+				<label for ="p_imp_id">Значимость: </label><br>
+				<input type="number" name="person-importance" id="p_imp_id" step=0.1 required><br>
+				<input type="Submit" value="Добавить в список">
+			</form>
+			<form class="file-form" method="POST" action="{{ url_for('eq_p_read') }}" enctype="multipart/form-data">
+				<input type="file" name="people-file" accept=".txt,.csv,.dat"><br>
+				<input id="p-load-button" type="Submit" value="Загрузить из файла">
+			</form>
+			<form class="clear-form" action="{{ url_for('eq_p_clear') }}">
+				<input class="clear-button" type="Submit" value="Очистить список" />
+			</form>
+
+			</div>
+			<div class="eq-output-box">
+				<h1>Распределение снаряжения</h1>
+					<form action="{{ url_for('eq_pack') }}" class="pack-form" method="POST">
+						<input type="Submit" value="Распределить">
+					</form><br>
+				{% if not report==None  %}
+				{{ report|safe }}
+				{% endif %}
+			</div>
+			<div class="status-line">
+				{% with messages = get_flashed_messages(with_categories=true) %}
+					{% for category, message in messages %}
+					<div class="{{ category }}">
+						{{ message }}
+					</div>
+					{% endfor %}
+				{% endwith %}
+			</div>
+			
+</div>
+{% endblock %}
