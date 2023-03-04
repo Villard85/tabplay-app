@@ -244,7 +244,7 @@ def random_string(length):
 def quotas_find_scores(customers_list, matrix):
 	delta = []
 	o_list = [x['order'] for x in customers_list]
-	p_list = [log(x['priority']+1) for x in customers_list]
+	p_list = [abs(log(x['priority'])+1) for x in customers_list]
 	for j in range(len(matrix[0])):
 		w = 0 
 		for i in range(len(matrix)):
@@ -761,7 +761,7 @@ def quotas_add():
 	while new_id in customers.keys():
 		new_id = random_string(8)
 	customers[new_id] = {'id': new_id, 'customer': fields['customer'], 
-		'order': int(fields['order']), 'priority': int(fields['priority'])} 
+		'order': abs(int(fields['order'])), 'priority': abs(int(fields['priority']))} 
 	flash('Заказчик \"{}\" добавлен'.format(fields['customer']), 'good')
 	session['customers'] = customers
 	#print(people)
@@ -786,8 +786,8 @@ def quotas_read():
 			customer={}
 			try:
 				customer['customer'] = data[0]
-				customer['order'] = round(int(data[1]),0)
-				customer['priority'] = round(int(data[2]),0)
+				customer['order'] = abs(round(int(data[1]),0))
+				customer['priority'] = abs(round(int(data[2]),0))
 				new_id = random_string(8)
 				while new_id in customers.keys():
 					new_id = random_string(8)
@@ -837,7 +837,7 @@ def quotas_update():
 		if field in data:
 			if field=='order' or field=='priority':
 				try:
-					customer[field] = round(int(data[field]),0)
+					customer[field] = abs(round(int(data[field]),0))
 				except Exception:
 					pass
 			else:
@@ -859,7 +859,7 @@ def quotas_arrange():
 		fields = request.form
 		qlimit = int(fields['qlimit'])
 		residue = 0
-		p_list = [log(x['priority']+1) for x in customers_list]
+		p_list = [abs(log(x['priority'])+1) for x in customers_list]
 		o_list = [x['order'] for x in customers_list]
 		if sum(o_list) < qlimit:
 			residue = int(qlimit - sum(o_list))

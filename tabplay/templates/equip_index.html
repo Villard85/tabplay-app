@@ -68,7 +68,7 @@
 									id: ev.target.dataset.elementId,
 									[ev.target.dataset.columnId]: ev.target.textContent
 								}),
-							}).then(()=>{window.location.reload()});
+							}).then(t_grid.updateConfig().forceRender());
 							
 						}
 						savedValue1 = undefined;
@@ -94,7 +94,7 @@
 			<form class="add-form" action="{{ url_for('eq_t_add') }}" method="POST">
 				<label for ="t-name_id">Название предмета: </label><br>
 				<input type="text" name="thing-name" id="t-name_id" required><br>
-				<label for ="t-weight_id">Вес, г: </label><br>
+				<label for ="t-weight_id">Вес: </label><br>
 				<input type="number" name="thing-weight" id="t-weight_id" step=0.1 required><br>
 				<input type="Submit" value="Добавить в список">
 			</form>
@@ -124,7 +124,7 @@
 					}
 				};*/
 
-				new gridjs.Grid({
+				const p_grid = new gridjs.Grid({
 						columns: [
 							{ id: 'id', 'hidden': true },
 							{ id: 'name', name: 'Имя' , 'attributes': editableCellAttributes},
@@ -178,7 +178,7 @@
 									id: ev.target.dataset.elementId,
 									[ev.target.dataset.columnId]: ev.target.textContent
 								}),
-							}).then(()=>{window.location.reload()});
+							}).then(p_grid.updateConfig().forceRender());
 							
 						}
 						savedValue2 = undefined;

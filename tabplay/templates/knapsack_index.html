@@ -18,7 +18,7 @@
 					}
 				};
 
-				new gridjs.Grid({
+				const gr1 = new gridjs.Grid({
 						columns: [
 						  { id: 'id', 'hidden': true },
 						  { id: 'item', name: 'Предмет' , 'attributes': editableCellAttributes},
@@ -52,6 +52,10 @@
 						resizable: true
 					  }).render(tableDiv);
 				
+				/*setInterval(()=>{
+					gr1.updateConfig().forceRender();
+				}, 2000);*/
+				
 				let savedValue;
 				
 				tableDiv.addEventListener('focusin', ev => {
@@ -70,7 +74,7 @@
 									id: ev.target.dataset.elementId,
 									[ev.target.dataset.columnId]: ev.target.textContent
 								}),
-							}).then(()=>{window.location.reload()});
+							}).then(gr1.updateConfig().forceRender());
 							
 						}
 						savedValue = undefined;

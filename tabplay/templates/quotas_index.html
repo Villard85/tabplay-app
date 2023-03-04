@@ -19,7 +19,7 @@
 					}
 				};
 
-				new gridjs.Grid({
+				const q_grid = new gridjs.Grid({
 						columns: [
 							{ id: 'id', 'hidden': true },
 							{ id: 'customer', name: 'Заказчик' , 'attributes': editableCellAttributes},
@@ -71,7 +71,7 @@
 									id: ev.target.dataset.elementId,
 									[ev.target.dataset.columnId]: ev.target.textContent
 								}),
-							}).then(()=>{window.location.reload()});
+							}).then(q_grid.updateConfig().forceRender());
 							
 						}
 						savedValue3 = undefined;
