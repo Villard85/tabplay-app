@@ -71,7 +71,7 @@
 									id: ev.target.dataset.elementId,
 									[ev.target.dataset.columnId]: ev.target.textContent
 								}),
-							}).then(q_grid.updateConfig().forceRender());
+							}).then(()=>{q_grid.updateConfig().forceRender()});
 							
 						}
 						savedValue3 = undefined;

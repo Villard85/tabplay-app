@@ -74,7 +74,7 @@
 									id: ev.target.dataset.elementId,
 									[ev.target.dataset.columnId]: ev.target.textContent
 								}),
-							}).then(gr1.updateConfig().forceRender());
+							}).then(()=>{gr1.updateConfig().forceRender()});
 							
 						}
 						savedValue = undefined;

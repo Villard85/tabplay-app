@@ -178,7 +178,7 @@
 									id: ev.target.dataset.elementId,
 									[ev.target.dataset.columnId]: ev.target.textContent
 								}),
-							}).then(p_grid.updateConfig().forceRender());
+							}).then(()=>{p_grid.updateConfig().forceRender()});
 							
 						}
 						savedValue2 = undefined;
